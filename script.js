@@ -14,6 +14,8 @@ const section1 = document.querySelector('#section--1');
 
 //navbar
 const navLinks = document.querySelector('.nav__links');
+const nav = document.querySelector('.nav');
+const navLogo = document.querySelector('.nav__logo');
 
 //Tabbed Component
 const tabContianer = document.querySelector('.operations__tab-container');
@@ -120,3 +122,30 @@ function tabbedComponent(e) {
 }
 
 tabContianer.addEventListener('click', tabbedComponent);
+
+//nav link hover
+function handleHover(e) {
+  if (e.target.classList.contains('nav__link')) {
+    const hoverdLink = e.target;
+    document.querySelectorAll('.nav__link').forEach(link => {
+      link.style.opacity = this;
+    });
+    navLogo.style.opacity = this;
+    hoverdLink.style.opacity = 1;
+  }
+}
+
+//hover event for navlinks
+//this is 1 approach to send an arg to eventHandler we have to call a function and in that function call the handler
+/* nav.addEventListener('mouseover', function (e) {
+  e.opacity = 0.5;
+  handleHover(e);
+  //  handleHover.bind(0.5);
+}); */
+
+/*this is 2 approach to send an arg to eventHandler we have to use bind method which will gives us the same function but
+ it will also set the this KEYWORD to what ever value here (0.5) or any object we gave to
+ so in the function we can get opacity by simply using the bind method*/
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+
+nav.addEventListener('mouseout', handleHover.bind(1));
