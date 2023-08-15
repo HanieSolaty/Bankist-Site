@@ -23,6 +23,9 @@ const tabContianer = document.querySelector('.operations__tab-container');
 //header section
 const headerSection = document.querySelector('header');
 
+//all sections
+const sections = document.querySelectorAll('.section');
+
 //Modal window functions
 const openModal = function () {
   modal.classList.remove('hidden');
@@ -156,7 +159,7 @@ nav.addEventListener('mouseout', handleHover.bind(1));
 //sticky navbar
 //using IntersectionObserver
 const navHight = nav.getBoundingClientRect().height;
-function observerFunction(entries) {
+function headerObserverFunction(entries) {
   entries.forEach(entry => {
     /*when we have passed header into section1 and also passed excatly height of navbar (because of rootMargin) then 
     entry function will get called. 2 below lines show this. height = y passed from section 1*/
@@ -167,11 +170,35 @@ function observerFunction(entries) {
     } else nav.classList.remove('nav-sticky');
   });
 }
-const navOptions = {};
 
-const observer = new IntersectionObserver(observerFunction, {
+//root: null, means check for intersection with whole viewport (no spesific el),
+//threshold: 0, means as soon any part of observed el is in viewport or when it's completely out
+/*rootMargin: `${navHight}px`, is alos to add navbar hieght to the amount of root el (in this case vp) before we act on threshold,
+this will basically wait to reach or pass threshold % of observed el and then it will call the handler*/
+const headerObserver = new IntersectionObserver(headerObserverFunction, {
   root: null,
   threshold: 0,
   rootMargin: `${navHight}px`,
 });
-observer.observe(headerSection);
+
+headerObserver.observe(headerSection);
+
+//Revealing each section on scroll
+function sectionsObserverFunction(entries, observer) {
+  entries.forEach(entry => {
+    console.log(entry);
+    if (!entry?.isIntersecting) return;
+    else entry.target.classList.remove('section--hidden');
+    //unobserve would stop observing each section that we already saw
+    observer.unobserve(entry.target);
+  });
+}
+const sectionsObserver = new IntersectionObserver(sectionsObserverFunction, {
+  root: null,
+  threshold: 0.15,
+});
+
+sections.forEach(section => {
+  sectionsObserver.observe(section);
+  section.classList.add('section--hidden');
+});
