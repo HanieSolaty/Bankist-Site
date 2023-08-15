@@ -15,6 +15,9 @@ const section1 = document.querySelector('#section--1');
 //navbar
 const navLinks = document.querySelector('.nav__links');
 
+//Tabbed Component
+const tabContianer = document.querySelector('.operations__tab-container');
+
 //Modal window functions
 const openModal = function () {
   modal.classList.remove('hidden');
@@ -90,3 +93,30 @@ if an click event happen at any of .navlink elements, then during bubbling phase
 and we use that instead of attaching the event to all the link, this will prevent us from OVERWRITING our function for
 every .nav__link, this way our function is only written once for parent element*/
 navLinks.addEventListener('click', navLinksScroll);
+
+function tabbedComponent(e) {
+  /*when we click on the button we can also click on the span which contians btn number and then we get that span
+  as e.target but we don't want the span in the btn with want the btn itself, since span is whithin btn and therefor
+  a child of btn we can use element.closest('.operations__tab') method to find the closest parent with class .operations__tab
+  of element click, if we click on the btn itself which has this class the btn will be returned and if we click on the span
+  which doesn't have this class .closest() will look for a parent with this class, namely btn and in both cases we get btn*/
+  const clickedBtn = e.target.closest('.operations__tab');
+  /*if we click outside of btn in tabContianer then since it is parent of clickedBtn, clickedBtn will be null and no
+  btns are clicked so we simply return from here and stop*/
+  if (!clickedBtn) return;
+  //remove active class from all btn and then add it to the btn that was clicked
+  document.querySelectorAll('.operations__tab').forEach(btn => {
+    btn.classList.remove('operations__tab--active');
+  });
+  clickedBtn.classList.add('operations__tab--active');
+  //element.dataset give us data- attr of el and each word after data- will be used like this data-tab => el.dataset.tab
+  const selectedContent = document.querySelector(
+    `.operations__content--${clickedBtn.dataset.tab}`
+  );
+  document.querySelectorAll('.operations__content').forEach(btn => {
+    btn.classList.remove('operations__content--active');
+  });
+  selectedContent.classList.add('operations__content--active');
+}
+
+tabContianer.addEventListener('click', tabbedComponent);
