@@ -20,6 +20,9 @@ const navLogo = document.querySelector('.nav__logo');
 //Tabbed Component
 const tabContianer = document.querySelector('.operations__tab-container');
 
+//header section
+const headerSection = document.querySelector('header');
+
 //Modal window functions
 const openModal = function () {
   modal.classList.remove('hidden');
@@ -149,3 +152,26 @@ function handleHover(e) {
 nav.addEventListener('mouseover', handleHover.bind(0.5));
 
 nav.addEventListener('mouseout', handleHover.bind(1));
+
+//sticky navbar
+//using IntersectionObserver
+const navHight = nav.getBoundingClientRect().height;
+function observerFunction(entries) {
+  entries.forEach(entry => {
+    /*when we have passed header into section1 and also passed excatly height of navbar (because of rootMargin) then 
+    entry function will get called. 2 below lines show this. height = y passed from section 1*/
+    /* console.log(nav.getBoundingClientRect().height);
+    console.log(section1.getBoundingClientRect().y); */
+    if (!entry?.isIntersecting) {
+      nav.classList.add('nav-sticky');
+    } else nav.classList.remove('nav-sticky');
+  });
+}
+const navOptions = {};
+
+const observer = new IntersectionObserver(observerFunction, {
+  root: null,
+  threshold: 0,
+  rootMargin: `${navHight}px`,
+});
+observer.observe(headerSection);
