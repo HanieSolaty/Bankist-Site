@@ -26,6 +26,10 @@ const headerSection = document.querySelector('header');
 //all sections
 const sections = document.querySelectorAll('.section');
 
+//imgs in feature section
+//selecting el[attr] will return element with given attr
+const featureImgs = document.querySelectorAll('img[data-src]');
+
 //Modal window functions
 const openModal = function () {
   modal.classList.remove('hidden');
@@ -186,7 +190,6 @@ headerObserver.observe(headerSection);
 //Revealing each section on scroll
 function sectionsObserverFunction(entries, observer) {
   entries.forEach(entry => {
-    console.log(entry);
     if (!entry?.isIntersecting) return;
     else entry.target.classList.remove('section--hidden');
     //unobserve would stop observing each section that we already saw
@@ -201,4 +204,33 @@ const sectionsObserver = new IntersectionObserver(sectionsObserverFunction, {
 sections.forEach(section => {
   sectionsObserver.observe(section);
   section.classList.add('section--hidden');
+});
+
+/*TODO: this func is very IMPORTANT this will be called on imgs and we approach them based on observer and once
+they are appoarch their intial src which is set to low resultion img will be set to high resultion img whose address
+is stored in data-set attr of imgaes, once src is changed we call eventHandler for load event on imges and when pic
+is loaded then we remove .lazy-img class which simply bulr low resultion img until high resultion in loaded*/
+function imgObserverFunction(entries, observer) {
+  entries.forEach(entry => {
+    if (!entry?.isIntersecting) return;
+    //set src of img to high resultion which is stored in data-src attr
+    entry.target.src = entry.target.dataset.src;
+    //waiting for img to load and then removing lazy-img class which simply blur low resultion img
+    entry.target.addEventListener('load', () => {
+      entry.target.classList.remove('lazy-img');
+      //unobserve since imgs are already loaded
+      observer.unobserve(entry.target);
+    });
+  });
+}
+
+//this rootMagrin : -200 means the handler will be called 200 px before we reach the threshold
+const imgObserver = new IntersectionObserver(imgObserverFunction, {
+  root: null,
+  threshold: 0.2,
+  rootMargin: '-200px',
+});
+
+featureImgs.forEach(img => {
+  imgObserver.observe(img);
 });
