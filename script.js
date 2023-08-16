@@ -255,14 +255,15 @@ let curSlide = 0;
 //Adding Slider component
 function goToSlide() {
   //this keyword is 1 to go right and -1 for left btn and when we load for the FIRST time this is 0
-
-  //first make btns visible and if this is not 0 so set curSlide to slide that we wanna go
+  if ((curSlide === 2 && this > 0) || (curSlide === 0 && this < 0)) return;
   if (this !== 0) {
+    //first make btns visible and if this is not 0 so set curSlide to slide that we wanna go
     btnSliderRight.style.visibility = 'visible';
     btnSliderLeft.style.visibility = 'visible';
+    //in next line technicaly we say which slide we wanna go, the after sliding current, not the one we are in
     this > 0 ? curSlide++ : curSlide--;
   }
-  //if the slide we wanna go is last or first hide btn left or right
+  //if the slide we wanna go is last or first hide btn left or right and return so no moves are made
   switch (curSlide) {
     case 0:
       btnSliderLeft.style.visibility = 'hidden';
@@ -291,8 +292,19 @@ function goToSlide() {
 
 goToSlide.bind(0)();
 
-btnSliderLeft.addEventListener('click', goToSlide.bind(-1));
+//sliding with right and left Btns
 btnSliderRight.addEventListener('click', goToSlide.bind(1));
-/* document.addEventListener('keydown', e => {
-  console.log(e.key);
-}); */
+btnSliderLeft.addEventListener('click', goToSlide.bind(-1));
+
+//sliding with right and left arrow keys
+document.addEventListener('keydown', e => {
+  switch (e.key) {
+    case 'ArrowRight':
+      goToSlide.bind(1)();
+      break;
+
+    case 'ArrowLeft':
+      goToSlide.bind(-1)();
+      break;
+  }
+});
