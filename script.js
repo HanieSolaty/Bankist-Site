@@ -30,6 +30,15 @@ const sections = document.querySelectorAll('.section');
 //selecting el[attr] will return element with given attr
 const featureImgs = document.querySelectorAll('img[data-src]');
 
+//slider
+const sectionSlider = document.querySelector('.slider');
+const slides = document.querySelectorAll('.slide');
+const btnSliderRight = document.querySelector('.slider__btn--right');
+const btnSliderLeft = document.querySelector('.slider__btn--left');
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Functionality
+
 //Modal window functions
 const openModal = function () {
   modal.classList.remove('hidden');
@@ -234,3 +243,42 @@ const imgObserver = new IntersectionObserver(imgObserverFunction, {
 featureImgs.forEach(img => {
   imgObserver.observe(img);
 });
+
+//slider feature
+let curSlide = 0;
+//sectionSlider.style.overflow = 'hidden';
+
+//Adding Slider component
+function goToSlide() {
+  //this keyword is 1 to go right and -1 for left btn and when we load for the FIRST time this is 0
+
+  //first make btns visible and if this is not 0 so set curSlide to slide that we wanna go
+  if (this !== 0) {
+    btnSliderRight.style.visibility = 'visible';
+    btnSliderLeft.style.visibility = 'visible';
+    this > 0 ? curSlide++ : curSlide--;
+  }
+  //if the slide we wanna go is last or first hide btn left or right
+  switch (curSlide) {
+    case 0:
+      btnSliderLeft.style.visibility = 'hidden';
+      break;
+    case 2:
+      btnSliderRight.style.visibility = 'hidden';
+      break;
+  }
+  //based on current slide we konw where we wanna go so with translateX we move
+  slides.forEach((slide, i) => {
+    //translateX property for each slide
+    //right direction: first: 0, 100, 200 and second: -100, 0 , 100 and third: -200, -100 , 0
+    //left reserve of up
+
+    //these slides are all on top of each other so we translateX to show them in a row
+    slide.style.transform = `translateX(${100 * (i - curSlide)}%)`;
+  });
+}
+
+goToSlide.bind(0)();
+
+btnSliderLeft.addEventListener('click', goToSlide.bind(-1));
+btnSliderRight.addEventListener('click', goToSlide.bind(1));
