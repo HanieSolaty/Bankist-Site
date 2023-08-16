@@ -351,3 +351,8 @@ function dotSliding(e) {
 }
 
 dotsContainer.addEventListener('click', dotSliding);
+
+//asking user are you sure to leave
+/* window.addEventListener('beforeunload', event => {
+  event.returnValue = '';
+}); */
