@@ -12,6 +12,9 @@
     />
     <link rel="stylesheet" href="style.css" />
     <title>Bankist | When Banking meets Minimalist</title>
+
+    <!--DOMContentLoaded Event take avg 1.2s to be fired if I add script tag with defer in head, nearly 0.8s less than end of body-->
+    <script defer src="script.js"></script>
   </head>
   <body>
     <header class="header">
@@ -340,6 +343,6 @@
     </div>
     <div class="overlay hidden"></div>
 
-    <script src="script.js"></script>
+    <!--DOMContentLoaded Event take avg 2s to be fired if I add script tag at the end of body-->
   </body>
 </html>
