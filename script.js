@@ -245,6 +245,10 @@ featureImgs.forEach(img => {
 });
 
 //slider feature
+//first I hide all slide so overflow is not visible
+slides.forEach(s => {
+  s.style.visibility = 'hidden';
+});
 let curSlide = 0;
 //sectionSlider.style.overflow = 'hidden';
 
@@ -276,9 +280,19 @@ function goToSlide() {
     //these slides are all on top of each other so we translateX to show them in a row
     slide.style.transform = `translateX(${100 * (i - curSlide)}%)`;
   });
+
+  //after 1 sec when first transition is complete , make slides vivilbe
+  setTimeout(() => {
+    slides.forEach(s => {
+      s.style.visibility = 'visible';
+    });
+  }, 1000);
 }
 
 goToSlide.bind(0)();
 
 btnSliderLeft.addEventListener('click', goToSlide.bind(-1));
 btnSliderRight.addEventListener('click', goToSlide.bind(1));
+/* document.addEventListener('keydown', e => {
+  console.log(e.key);
+}); */
