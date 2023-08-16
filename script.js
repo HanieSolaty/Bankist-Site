@@ -35,6 +35,7 @@ const sectionSlider = document.querySelector('.slider');
 const slides = document.querySelectorAll('.slide');
 const btnSliderRight = document.querySelector('.slider__btn--right');
 const btnSliderLeft = document.querySelector('.slider__btn--left');
+const dotsContainer = document.querySelector('.dots');
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Functionality
@@ -252,9 +253,22 @@ slides.forEach(s => {
 let curSlide = 0;
 //sectionSlider.style.overflow = 'hidden';
 
+//Add dots to slider
+dotsContainer.innerHTML = '';
+slides.forEach((_, i) => {
+  dotsContainer.insertAdjacentHTML(
+    'beforeend',
+    `<button class="dots__dot" data-slide="${i}"></button>`
+  );
+});
+
 //Adding Slider component
+
 function goToSlide() {
-  //this keyword is 1 to go right and -1 for left btn and when we load for the FIRST time this is 0
+  //if this keyword is 1 to go right
+  //if this keyword is -1 for left btn
+  //when we load for the FIRST time this keyword is 0 only to set everything in right position
+  //next if checks if we are in firth or last slide and user wants to go further
   if ((curSlide === 2 && this > 0) || (curSlide === 0 && this < 0)) return;
   if (this !== 0) {
     //first make btns visible and if this is not 0 so set curSlide to slide that we wanna go
@@ -272,6 +286,14 @@ function goToSlide() {
       btnSliderRight.style.visibility = 'hidden';
       break;
   }
+
+  //first Reomve activeDot class from all dots and then add activeDot class to the dot same as curSlide (now that curSlide is set)
+  document.querySelectorAll('.dots__dot').forEach(dot => {
+    dot.classList.remove('dots__dot--active');
+  });
+  document
+    .querySelector(`.dots__dot[data-slide="${curSlide}"]`)
+    .classList.add('dots__dot--active');
   //based on current slide we konw where we wanna go so with translateX we move
   slides.forEach((slide, i) => {
     //translateX property for each slide
@@ -308,3 +330,24 @@ document.addEventListener('keydown', e => {
       break;
   }
 });
+
+//slding with dots
+
+//add event listener to the dots parent element which is dotsContainer
+function dotSliding(e) {
+  //check if user has clicked out side of dots in dotContainer (Matching Strategy) || if we aleady are in the same slice as clicked
+  const selectedSlide = Number(e.target.dataset.slide);
+  if (!e.target.classList.contains('dots__dot') || selectedSlide === curSlide)
+    return;
+  if (e.target.dataset.slide > curSlide) {
+    //set the curslide to one after the selected and go left with goToSlide method
+    curSlide = selectedSlide + 1;
+    goToSlide.bind(-1)();
+  } else {
+    //set the curslide to one before the selected and go Right with goToSlide method
+    curSlide = selectedSlide - 1;
+    goToSlide.bind(1)();
+  }
+}
+
+dotsContainer.addEventListener('click', dotSliding);
